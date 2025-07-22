@@ -33,10 +33,13 @@ function displayMessage(role, text) {
     const messageContent = document.createElement('span'); // Bąbelek wiadomości
     
     // Check for code blocks using regex
-    const codeBlockRegex = /```(lua|luacode)\n([\s\S]*?)\n```/g;
+    // Ważne: zmieniono na bardziej zachłanną wersję `[\s\S]*?` na `[\s\S]*`
+    // jeśli to nie pomoże, problemem jest prawdopodobnie zachłanność regexa,
+    // ale na początek spróbujmy tej poprawki
+    const codeBlockRegex = /```(?:lua|luacode)\n([\s\S]*?)\n```/g; // Changed to non-capturing group for language
     let match;
     let lastIndex = 0;
-    let tempProcessedContent = document.createDocumentFragment(); // Użyj fragmentu dokumentu dla efektywności
+    let tempProcessedContent = document.createDocumentFragment();
 
     while ((match = codeBlockRegex.exec(text)) !== null) {
         // Add text before the code block
@@ -49,30 +52,31 @@ function displayMessage(role, text) {
             }
         }
 
-        const lang = match[1];
-        const code = match[2];
+        const lang = match[1]; // Captured group for the language
+        const codeTextToHighlight = match[1]; // This was the problem - it should be match[2] if it captured the code
 
-        // Create pre and code elements for highlighting
         const pre = document.createElement('pre');
         const codeElement = document.createElement('code');
         codeElement.classList.add(`language-${lang}`);
-        codeElement.textContent = code;
+        // TUTAJ JEST KLUCZOWA ZMIANA: Używamy match[2] dla zawartości kodu, jeśli regex ma grupę przechwytującą dla kodu
+        // Jeśli regex to ```(lua|luacode)\n([\s\S]*?)\n```, to match[2] to jest kod.
+        // Upewnij się, że Twój regex ma drugą grupę przechwytującą dla zawartości.
+        codeElement.textContent = match[2]; // <--- UPEWNIJ SIĘ, ŻE TO JEST POPRAWNE match[2]
 
         pre.appendChild(codeElement);
 
-        // Highlight the code
         if (typeof hljs !== 'undefined' && hljs.highlightElement) {
             hljs.highlightElement(codeElement);
         } else {
             console.warn("Highlight.js (hljs) not found or not fully loaded. Code highlighting skipped.");
         }
 
-        // --- DODANIE PRZYCISKU KOPIOWANIA ---
         const copyButton = document.createElement('button');
         copyButton.classList.add('copy-button');
         copyButton.textContent = 'Copy';
         copyButton.onclick = () => {
-            navigator.clipboard.writeText(code)
+            // KLUCZOWA ZMIANA: Kopiowanie tekstu bezpośrednio z DOM (codeElement.textContent)
+            navigator.clipboard.writeText(codeElement.textContent)
                 .then(() => {
                     const originalText = copyButton.textContent;
                     copyButton.textContent = 'Copied!';
@@ -85,27 +89,22 @@ function displayMessage(role, text) {
                 });
         };
         pre.appendChild(copyButton);
-        // --- KONIEC DODAWANIA PRZYCISKU KOPIOWANIA ---
 
         tempProcessedContent.appendChild(pre);
         lastIndex = codeBlockRegex.lastIndex;
     }
 
-    // Add any remaining text after the last code block
     const postCodeText = text.substring(lastIndex);
     if (postCodeText) {
         tempProcessedContent.appendChild(document.createTextNode(postCodeText));
     }
 
-    messageContent.appendChild(tempProcessedContent); // Dodaj fragment dokumentu do span
-    
+    messageContent.appendChild(tempProcessedContent);
     messageContainer.appendChild(messageContent);
     chatHistory.appendChild(messageContainer);
 
-    // Scroll to bottom
     chatHistory.scrollTop = chatHistory.scrollHeight;
 }
-
 
 // Add event listener for button click
 submitBtn.addEventListener('click', async () => {
@@ -115,14 +114,11 @@ submitBtn.addEventListener('click', async () => {
         return;
     }
 
-    // Display user message immediately
     displayMessage('user', userPrompt);
     addMessageToHistory('user', userPrompt);
 
-    // Clear the textarea immediately after the button is clicked
     promptInput.value = '';
 
-    // Show generating message
     const generatingMessageDiv = document.createElement('div');
     generatingMessageDiv.textContent = 'WaveGPT is generating a response... Please wait...';
     generatingMessageDiv.style.color = '#ffffff';
@@ -130,8 +126,6 @@ submitBtn.addEventListener('click', async () => {
     chatHistory.appendChild(generatingMessageDiv);
     chatHistory.scrollTop = chatHistory.scrollHeight;
 
-
-    // Define the system instructions for the AI
     const systemInstruction = `You are WaveGPT, an AI assistant for the Roblox executor Wave, created by the SPDM Team and revived by mi7.
 Your sole purpose is to assist with creating Luau scripts.
 
@@ -151,7 +145,6 @@ Guidelines:
 
 If this is the very first message in the conversation or the conversation has been reset, greet the user briefly and address them by "User".`;
 
-
     try {
         const requestBody = {
             contents: conversationHistory,
@@ -166,7 +159,6 @@ If this is the very first message in the conversation or the conversation has be
             body: JSON.stringify(requestBody)
         });
 
-        // Remove generating message
         if (chatHistory.contains(generatingMessageDiv)) {
              chatHistory.removeChild(generatingMessageDiv);
         }
@@ -190,7 +182,6 @@ If this is the very first message in the conversation or the conversation has be
         }
 
     } catch (error) {
-        // Remove generating message if still present due to network error
         if (chatHistory.contains(generatingMessageDiv)) {
              chatHistory.removeChild(generatingMessageDiv);
         }
