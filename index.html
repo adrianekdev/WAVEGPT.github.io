@@ -9,7 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    </head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
 <body>
     <div class="chat-container">
         <div class="chat-header">
@@ -18,10 +19,16 @@
         </div>
 
         <div class="chat-history" id="responseOutput">
+            <div class="message model">
+                <strong>WaveGPT:</strong>
+                <span>Hello! How can I help you today? :)</span>
             </div>
+        </div>
 
-        <div class="chat-input">
-            <textarea id="promptInput" placeholder="Send a message..."></textarea>
+        <div class="chat-input-wrapper">
+            <div class="input-box">
+                <i class="fas fa-microphone microphone-icon"></i> <textarea id="promptInput" placeholder="Send a message.."></textarea>
+            </div>
             <button id="submitBtn">Send</button>
         </div>
     </div>
