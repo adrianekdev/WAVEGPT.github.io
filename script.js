@@ -2,7 +2,7 @@
 // THIS IS FOR EDUCATIONAL AND TESTING PURPOSES ONLY.
 
 const GEMINI_API_KEY = "AIzaSyCqS3btZWOK26eeDMKD-eVUg9Sy5p4Ph8s"; // *** REPLACE THIS WITH YOUR API KEY ***
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-03-25:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-03-25:generateContent?key=${GEMINI_API_KEY}`;
 
 // Get DOM elements
 const promptInput = document.getElementById('promptInput');
