@@ -81,13 +81,11 @@ body {
     padding: 10px 15px;
     background-color: rgba(0, 0, 0, 0.2);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    /* Usunięto gap, ponieważ nie ma już drugiego elementu obok input-box */
-    /* gap: 10px; */
     border-radius: 0;
 }
 
 .input-box {
-    flex-grow: 1; /* Pozwoli input-box zająć całą dostępną szerokość */
+    flex-grow: 1;
     display: flex;
     align-items: center;
     background-color: rgba(255, 255, 255, 0.15);
@@ -111,33 +109,12 @@ textarea#promptInput {
 }
 
 textarea#promptInput::placeholder {
-    color: rgba(255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.6); /* <-- Zmieniono z 255, 255, 0 na 255, 255, 255 */
 }
 
 textarea#promptInput:focus {
     outline: none;
 }
-
-/* Usunięto style dla button#submitBtn */
-/*
-button#submitBtn {
-    background-color: #1e90ff;
-    color: white;
-    padding: 8px 18px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 15px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(30, 144, 255, 0.3);
-}
-
-button#submitBtn:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
-}
-*/
 
 /* Styles for chat messages - user and AI */
 .message {
