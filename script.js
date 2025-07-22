@@ -2,12 +2,11 @@
 // THIS IS FOR EDUCATIONAL AND TESTING PURPOSES ONLY.
 
 const GEMINI_API_KEY = "AIzaSyCqS3btZWOK26eeDMKD-eVUg9Sy5p4Ph8s"; // *** REPLACE THIS WITH YOUR API KEY ***
-// Using gemini-1.5-flash-latest for conversational capabilities
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-03-25:generateContent?key=${GEMINI_API_KEY}`;
 
 // Get DOM elements
 const promptInput = document.getElementById('promptInput');
-const submitBtn = document.getElementById('submitBtn');
+// Usunięto submitBtn - const submitBtn = document.getElementById('submitBtn');
 const chatHistory = document.getElementById('responseOutput');
 
 // --- CONVERSATION HISTORY ---
@@ -33,8 +32,6 @@ function displayMessage(role, text) {
     const messageContent = document.createElement('span'); // Bąbelek wiadomości
     
     // Check for code blocks using regex
-    // KLUCZOWA ZMIANA REGEXA: Teraz (lua|luacode) jest pierwszą grupą przechwytującą (match[1]),
-    // a [\s\S]*? jest drugą grupą przechwytującą (match[2]).
     const codeBlockRegex = /```(lua|luacode)\n([\s\S]*?)\n```/g;
     let match;
     let lastIndex = 0;
@@ -44,22 +41,19 @@ function displayMessage(role, text) {
         // Add text before the code block
         const preCodeText = text.substring(lastIndex, match.index);
         if (preCodeText) {
-            // Zamień '\n' na '<br>' tylko w zwykłym tekście
             tempProcessedContent.appendChild(document.createTextNode(preCodeText));
-            // Dodajemy <br> tylko jeśli nie jest to bezpośrednio przed blokiem kodu
-            // i jeśli tekst faktycznie zawierał nowe linie.
             if (!preCodeText.endsWith('\n') && preCodeText.includes('\n')) {
                  tempProcessedContent.appendChild(document.createElement('br'));
             }
         }
 
-        const lang = match[1]; // Język z pierwszej grupy przechwytującej
-        const codeActualText = match[2]; // Rzeczywisty kod z drugiej grupy przechwytującej
+        const lang = match[1];
+        const codeActualText = match[2];
 
         const pre = document.createElement('pre');
         const codeElement = document.createElement('code');
-        codeElement.classList.add(`language-${lang}`); // Teraz 'lang' będzie "lua" lub "luacode"
-        codeElement.textContent = codeActualText; // Używamy prawidłowej zmiennej z przechwyconym kodem
+        codeElement.classList.add(`language-${lang}`);
+        codeElement.textContent = codeActualText;
 
         pre.appendChild(codeElement);
 
@@ -73,7 +67,7 @@ function displayMessage(role, text) {
         copyButton.classList.add('copy-button');
         copyButton.textContent = 'Copy';
         copyButton.onclick = () => {
-            navigator.clipboard.writeText(codeElement.textContent) // Kopiowanie tekstu bezpośrednio z DOM
+            navigator.clipboard.writeText(codeElement.textContent)
                 .then(() => {
                     const originalText = copyButton.textContent;
                     copyButton.textContent = 'Copied!';
@@ -91,7 +85,6 @@ function displayMessage(role, text) {
         lastIndex = codeBlockRegex.lastIndex;
     }
 
-    // Add any remaining text after the last code block
     const postCodeText = text.substring(lastIndex);
     if (postCodeText) {
         tempProcessedContent.appendChild(document.createTextNode(postCodeText));
@@ -104,8 +97,8 @@ function displayMessage(role, text) {
     chatHistory.scrollTop = chatHistory.scrollHeight;
 }
 
-// Add event listener for button click
-submitBtn.addEventListener('click', async () => {
+// Funkcja do wysyłania wiadomości (przeniesiona z click listenera)
+async function sendMessage() {
     const userPrompt = promptInput.value.trim();
 
     if (!userPrompt) {
@@ -186,4 +179,15 @@ If this is the very first message in the conversation or the conversation has be
         console.error('An error occurred during API communication:', error);
         displayMessage('model', `An error occurred: ${error.message}. Check your browser console.`);
     }
+}
+
+
+// Now promptInput will trigger sendMessage on Enter key press
+promptInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) { // Wysyłaj na Enter, ale pozwól na Shift+Enter dla nowej linii
+        event.preventDefault(); // Zapobiegaj domyślnemu zachowaniu (nowa linia w textarea)
+        sendMessage();
+    }
 });
+
+// Usunięto submitBtn.addEventListener('click', async () => {...});
