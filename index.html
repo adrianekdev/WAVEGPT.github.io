@@ -3,17 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My AI with Gemini</title>
+    <title>Wave AI</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-</head>
+    </head>
 <body>
-    <div class="container">
-        <h1>Ask Gemini AI</h1>
-        <textarea id="promptInput" placeholder="Enter your question here..."></textarea>
-        <button id="submitBtn">Generate Response</button>
-        <div id="responseOutput">
+    <div class="chat-container">
+        <div class="chat-header">
+            <img src="https://img.icons8.com/ios-filled/50/FFFFFF/speech-bubble.png" alt="Chat Icon" class="chat-icon">
+            <span class="header-text">wave <span class="ai-text">AI</span></span>
+        </div>
+
+        <div class="chat-history" id="responseOutput">
             </div>
+
+        <div class="chat-input">
+            <textarea id="promptInput" placeholder="Send a message..."></textarea>
+            <button id="submitBtn">Send</button>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
