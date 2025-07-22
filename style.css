@@ -17,15 +17,17 @@ body {
 .chat-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    max-width: 350px; /* Bardzo mała szerokość, jak na zdjęciu */
-    height: 550px; /* Stała wysokość okna czatu */
+    /* Zmienione, aby dopasować się do dostępnego miejsca i usunąć zaokrąglenia na bokach */
+    width: 250px; /* Zmniejszona szerokość, aby mieściła się w lewej kolumnie */
+    height: 100vh; /* Wypełnij całą wysokość widoku, jeśli jest osadzone w aplikacji */
+    /* Jeśli chcesz stałą wysokość mniejszą niż 100vh, np. 550px, użyj height: 550px; */
+
     background-color: rgba(255, 255, 255, 0.05); /* Lekko przezroczyste tło kontenera */
-    border-radius: 12px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); /* Mocniejszy cień dla efektu uniesienia */
-    overflow: hidden; /* Upewnia się, że nic nie wystaje poza zaokrąglone rogi */
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtelna ramka */
-    backdrop-filter: blur(15px); /* Mocniejsze rozmycie dla efektu "szkła" */
+    border-radius: 0; /* Usunięte zaokrąglenia */
+    box-shadow: none; /* Usunięto cień, jeśli ma wyglądać na zintegrowane */
+    overflow: hidden;
+    border: none; /* Usunięto ramkę */
+    backdrop-filter: blur(15px);
 }
 
 .chat-header {
@@ -38,12 +40,13 @@ body {
     color: #fff;
     font-size: 1.2em;
     font-weight: bold;
+    border-radius: 0; /* Usunięte zaokrąglenia */
 }
 
 .chat-icon {
     width: 28px;
     height: 28px;
-    /* Optional: Filter for color if icon is not white */
+    /* Optional: Add filter if icon is not white and you want to color it */
     /* filter: brightness(0) invert(1); */
 }
 
@@ -52,14 +55,13 @@ body {
 }
 
 .ai-text {
-    color: #1e90ff; /* Kolor "AI" jak na zdjęciu */
+    color: #1e90ff;
 }
 
 .chat-history {
-    flex-grow: 1; /* Pozwala historii czatu zajmować dostępną przestrzeń */
+    flex-grow: 1;
     padding: 15px;
-    overflow-y: auto; /* Włącz przewijanie, gdy wiadomości przekroczą wysokość */
-    /* Niestandardowy pasek przewijania */
+    overflow-y: auto;
     scrollbar-width: thin; /* Firefox */
     scrollbar-color: #1e90ff #0a1128; /* Firefox */
 }
@@ -83,22 +85,23 @@ body {
 .chat-input {
     display: flex;
     padding: 15px;
-    background-color: rgba(0, 0, 0, 0.2); /* Ciemniejsze, przezroczyste tło inputa */
+    background-color: rgba(0, 0, 0, 0.2);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     gap: 10px;
+    border-radius: 0; /* Usunięte zaokrąglenia */
 }
 
 textarea#promptInput {
-    flex-grow: 1; /* Pozwala textarea rozciągnąć się */
-    height: 40px; /* Stała wysokość inputa */
+    flex-grow: 1;
+    height: 40px;
     padding: 10px 12px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px; /* Bardziej zaokrąglone rogi dla inputa */
+    border-radius: 20px;
     font-size: 15px;
-    resize: none; /* Wyłącza możliwość zmiany rozmiaru przez użytkownika */
-    background-color: rgba(255, 255, 255, 0.1); /* Przezroczyste tło inputa */
+    resize: none;
+    background-color: rgba(255, 255, 255, 0.1);
     color: #e0e0e0;
-    overflow-y: hidden; /* Ukryj scrollbar, chyba że tekst jest naprawdę długi */
+    overflow-y: hidden;
 }
 
 textarea#promptInput::placeholder {
@@ -116,11 +119,11 @@ button#submitBtn {
     color: white;
     padding: 10px 18px;
     border: none;
-    border-radius: 20px; /* Zaokrąglony przycisk */
+    border-radius: 20px;
     cursor: pointer;
     font-size: 15px;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    flex-shrink: 0; /* Zapobiega zmniejszaniu przycisku */
+    flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(30, 144, 255, 0.3);
 }
 
@@ -136,7 +139,7 @@ button#submitBtn:hover {
 }
 
 .message strong {
-    display: block; /* Ustawia nazwę roli w nowej linii */
+    display: block;
     margin-bottom: 4px;
     font-size: 0.9em;
     color: rgba(255, 255, 255, 0.7);
@@ -145,58 +148,56 @@ button#submitBtn:hover {
 .message.user {
     text-align: right;
     margin-left: auto;
-    max-width: 90%; /* Zmniejszona szerokość bąbelka */
-    color: #e0e0e0; /* Kolor tekstu wiadomości */
+    max-width: 90%;
+    color: #e0e0e0;
 }
 
-.message.user span { /* Tekst wiadomości */
-    background-color: #1e90ff; /* Jasny niebieski bąbelek dla użytkownika */
+.message.user span {
+    background-color: #1e90ff;
     padding: 8px 12px;
-    border-radius: 18px 18px 5px 18px; /* Zaokrąglenie w stylu bąbelka */
-    display: inline-block; /* Aby tło dopasowało się do treści */
-    word-wrap: break-word; /* Łamanie długich słów */
+    border-radius: 18px 18px 5px 18px;
+    display: inline-block;
+    word-wrap: break-word;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .message.model {
     text-align: left;
     margin-right: auto;
-    max-width: 90%; /* Zmniejszona szerokość bąbelka */
-    color: #e0e0e0; /* Kolor tekstu wiadomości */
+    max-width: 90%;
+    color: #e0e0e0;
 }
 
-.message.model span { /* Tekst wiadomości */
-    background-color: rgba(255, 255, 255, 0.15); /* Ciemny, przezroczysty bąbelek dla AI */
+.message.model span {
+    background-color: rgba(255, 255, 255, 0.15);
     padding: 8px 12px;
-    border-radius: 18px 18px 18px 5px; /* Zaokrąglenie w stylu bąbelka */
-    display: inline-block; /* Aby tło dopasowało się do treści */
-    word-wrap: break-word; /* Łamanie długich słów */
+    border-radius: 18px 18px 18px 5px;
+    display: inline-block;
+    word-wrap: break-word;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    /* Upewnij się, że bąbelek wypełnia dostępną szerokość, jeśli zawiera blok kodu */
-    width: auto; /* Pozwól zawartości dyktować szerokość, ale rozciągnij, jeśli element podrzędny jest szeroki */
-    min-width: 0; /* Zastąp domyślny min-width */
+    width: auto;
+    min-width: 0;
 }
 
 /* Stylizacja bloku kodu */
 pre {
-    background-color: #282c34; /* Ciemne tło dla bloków kodu */
+    background-color: #282c34;
     padding: 10px;
     border-radius: 5px;
-    overflow-x: auto; /* Pozwala na przewijanie poziome dla długich linii kodu */
+    overflow-x: auto;
     margin-top: 5px;
     margin-bottom: 5px;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-    /* Zapewnienie, że pre zajmuje całą dostępną szerokość */
-    width: 100%; /* Wypełnij całą szerokość rodzica (spana) */
-    box-sizing: border-box; /* Uwzględnij padding i border w szerokości */
-    position: relative; /* Dla pozycjonowania przycisku kopiowania */
-    min-width: 0; /* Zezwól na zmniejszenie się, jeśli content jest bardzo mały */
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    min-width: 0;
 }
 
 code {
-    font-family: 'Fira Code', 'Cascadia Code', monospace; /* Czcionka monospace dla kodu */
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
     font-size: 0.9em;
-    color: #abb2bf; /* Jasnoszary kolor tekstu kodu */
+    color: #abb2bf;
 }
 
 /* Styl dla przycisku kopiowania */
@@ -211,13 +212,13 @@ code {
     padding: 5px 8px;
     font-size: 12px;
     cursor: pointer;
-    opacity: 0; /* Ukryty domyślnie */
+    opacity: 0;
     transition: opacity 0.3s ease;
-    z-index: 10; /* Upewnij się, że jest nad kodem */
+    z-index: 10;
 }
 
 pre:hover .copy-button {
-    opacity: 1; /* Pokaż przy najechaniu na pre */
+    opacity: 1;
 }
 
 .copy-button:active {
