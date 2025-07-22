@@ -4,7 +4,8 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #0a1128 0%, #001f54 50%, #1a4f6d 100%);
+    /* Jasny gradient tła jak na zdjęciu */
+    background: linear-gradient(135deg, #1A4D6F 0%, #153B55 50%, #0D243B 100%);
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -16,18 +17,21 @@ body {
 .chat-container {
     display: flex;
     flex-direction: column;
-    width: 250px;
-    height: 100vh; /* Zmieniono z 550px na 100vh, jeśli ma wypełniać całą wysokość */
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 0;
-    box-shadow: none;
+    /* Zmniejszona szerokość i wysokość dla bocznego panelu */
+    width: 250px; /* Szerokość jak na zdjęciu */
+    height: 100vh; /* Wypełnia całą wysokość widoku */
+
+    /* Zmienione tło na jaśniejszy gradient */
+    background: linear-gradient(180deg, rgba(30, 144, 255, 0.2) 0%, rgba(30, 144, 255, 0.1) 100%);
+    border-radius: 0; /* Bez zaokrągleń */
+    box-shadow: none; /* Bez cienia */
     overflow: hidden;
     border: none;
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px); /* Mocniejsze rozmycie */
 }
 
 .chat-header {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.2); /* Ciemniejszy, przezroczysty nagłówek */
     padding: 15px 20px;
     display: flex;
     align-items: center;
@@ -42,6 +46,8 @@ body {
 .chat-icon {
     width: 28px;
     height: 28px;
+    /* Filtr, jeśli ikona nie jest biała */
+    /* filter: brightness(0) invert(1); */
 }
 
 .header-text {
@@ -60,6 +66,7 @@ body {
     scrollbar-color: #1e90ff #0a1128;
 }
 
+/* Chrome, Edge, Safari */
 .chat-history::-webkit-scrollbar {
     width: 8px;
 }
@@ -75,26 +82,45 @@ body {
     border: 2px solid #0a1128;
 }
 
-.chat-input {
+/* Nowa stylizacja dla pola input */
+.chat-input-wrapper {
     display: flex;
-    padding: 15px;
-    background-color: rgba(0, 0, 0, 0.2);
+    align-items: center; /* Wyśrodkowanie w pionie */
+    padding: 10px 15px; /* Mniejszy padding góra/dół */
+    background-color: rgba(0, 0, 0, 0.2); /* Lekko przezroczyste tło */
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     gap: 10px;
     border-radius: 0;
 }
 
+.input-box {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.15); /* Jasne, przezroczyste tło okienka */
+    border-radius: 20px; /* Zaokrąglone rogi okienka */
+    padding: 5px 15px; /* Padding wewnętrzny okienka */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtelna ramka */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Lekki cień */
+}
+
+.microphone-icon {
+    color: rgba(255, 255, 255, 0.6); /* Kolor ikony mikrofonu */
+    margin-right: 8px;
+    font-size: 1.1em;
+}
+
 textarea#promptInput {
     flex-grow: 1;
-    height: 40px;
-    padding: 10px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
+    height: 25px; /* Niższa wysokość dla pojedynczej linii */
+    padding: 0; /* Usuń padding, bo już jest w .input-box */
+    border: none; /* Usuń ramkę, bo jest w .input-box */
     font-size: 15px;
     resize: none;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: transparent; /* Przezroczyste tło */
     color: #e0e0e0;
-    overflow-y: hidden;
+    overflow-y: hidden; /* Ukryj scrollbar */
+    line-height: 25px; /* Dopasuj wysokość linii do wysokości tekstu */
 }
 
 textarea#promptInput::placeholder {
@@ -103,14 +129,14 @@ textarea#promptInput::placeholder {
 
 textarea#promptInput:focus {
     outline: none;
-    border-color: #1e90ff;
-    box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.4);
+    /* border-color: #1e90ff; */ /* Usuń, bo ramka jest na .input-box */
+    /* box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.4); */ /* Usuń, bo ramka jest na .input-box */
 }
 
 button#submitBtn {
     background-color: #1e90ff;
     color: white;
-    padding: 10px 18px;
+    padding: 8px 18px; /* Mniejszy padding dla przycisku */
     border: none;
     border-radius: 20px;
     cursor: pointer;
@@ -162,7 +188,7 @@ button#submitBtn:hover {
 }
 
 .message.model span {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.15); /* Jaśniejsze tło bąbelka AI */
     padding: 8px 12px;
     border-radius: 18px 18px 18px 5px;
     display: block;
@@ -176,8 +202,7 @@ button#submitBtn:hover {
 pre {
     background-color: #282c34;
     padding: 10px;
-    /* Zwiększ padding na dole, aby było miejsce na przycisk, jeśli jest zawsze widoczny */
-    padding-bottom: 30px; /* Zwiększony padding na dole */
+    padding-bottom: 30px; /* Zwiększony padding na dole dla przycisku */
     border-radius: 5px;
     overflow-x: auto;
     margin-top: 5px;
@@ -201,7 +226,7 @@ code {
 /* Styl dla przycisku kopiowania */
 .copy-button {
     position: absolute;
-    bottom: 5px; /* Zmieniono z 'top: 5px' na 'bottom: 5px' */
+    bottom: 5px;
     right: 5px;
     background-color: rgba(0, 0, 0, 0.6);
     color: white;
@@ -210,15 +235,10 @@ code {
     padding: 5px 8px;
     font-size: 12px;
     cursor: pointer;
-    opacity: 1; /* Pozostaje zawsze widoczny, chyba że zdecydujesz inaczej */
+    opacity: 1; /* Zawsze widoczny */
     transition: opacity 0.3s ease;
     z-index: 10;
 }
-
-/* Jeśli chcesz, aby pojawiał się na hover, odkomentuj poniższe i ustaw opacity: 0; w .copy-button */
-/* pre:hover .copy-button {
-    opacity: 1;
-} */
 
 .copy-button:active {
     background-color: rgba(0, 0, 0, 0.8);
