@@ -33,10 +33,9 @@ function displayMessage(role, text) {
     const messageContent = document.createElement('span'); // Bąbelek wiadomości
     
     // Check for code blocks using regex
-    // Ważne: zmieniono na bardziej zachłanną wersję `[\s\S]*?` na `[\s\S]*`
-    // jeśli to nie pomoże, problemem jest prawdopodobnie zachłanność regexa,
-    // ale na początek spróbujmy tej poprawki
-    const codeBlockRegex = /```(?:lua|luacode)\n([\s\S]*?)\n```/g; // Changed to non-capturing group for language
+    // KLUCZOWA ZMIANA REGEXA: Teraz (lua|luacode) jest pierwszą grupą przechwytującą (match[1]),
+    // a [\s\S]*? jest drugą grupą przechwytującą (match[2]).
+    const codeBlockRegex = /```(lua|luacode)\n([\s\S]*?)\n```/g;
     let match;
     let lastIndex = 0;
     let tempProcessedContent = document.createDocumentFragment();
@@ -45,23 +44,22 @@ function displayMessage(role, text) {
         // Add text before the code block
         const preCodeText = text.substring(lastIndex, match.index);
         if (preCodeText) {
+            // Zamień '\n' na '<br>' tylko w zwykłym tekście
             tempProcessedContent.appendChild(document.createTextNode(preCodeText));
             // Dodajemy <br> tylko jeśli nie jest to bezpośrednio przed blokiem kodu
-            if (!preCodeText.endsWith('\n')) {
-                tempProcessedContent.appendChild(document.createElement('br'));
+            // i jeśli tekst faktycznie zawierał nowe linie.
+            if (!preCodeText.endsWith('\n') && preCodeText.includes('\n')) {
+                 tempProcessedContent.appendChild(document.createElement('br'));
             }
         }
 
-        const lang = match[1]; // Captured group for the language
-        const codeTextToHighlight = match[1]; // This was the problem - it should be match[2] if it captured the code
+        const lang = match[1]; // Język z pierwszej grupy przechwytującej
+        const codeActualText = match[2]; // Rzeczywisty kod z drugiej grupy przechwytującej
 
         const pre = document.createElement('pre');
         const codeElement = document.createElement('code');
-        codeElement.classList.add(`language-${lang}`);
-        // TUTAJ JEST KLUCZOWA ZMIANA: Używamy match[2] dla zawartości kodu, jeśli regex ma grupę przechwytującą dla kodu
-        // Jeśli regex to ```(lua|luacode)\n([\s\S]*?)\n```, to match[2] to jest kod.
-        // Upewnij się, że Twój regex ma drugą grupę przechwytującą dla zawartości.
-        codeElement.textContent = match[2]; // <--- UPEWNIJ SIĘ, ŻE TO JEST POPRAWNE match[2]
+        codeElement.classList.add(`language-${lang}`); // Teraz 'lang' będzie "lua" lub "luacode"
+        codeElement.textContent = codeActualText; // Używamy prawidłowej zmiennej z przechwyconym kodem
 
         pre.appendChild(codeElement);
 
@@ -75,8 +73,7 @@ function displayMessage(role, text) {
         copyButton.classList.add('copy-button');
         copyButton.textContent = 'Copy';
         copyButton.onclick = () => {
-            // KLUCZOWA ZMIANA: Kopiowanie tekstu bezpośrednio z DOM (codeElement.textContent)
-            navigator.clipboard.writeText(codeElement.textContent)
+            navigator.clipboard.writeText(codeElement.textContent) // Kopiowanie tekstu bezpośrednio z DOM
                 .then(() => {
                     const originalText = copyButton.textContent;
                     copyButton.textContent = 'Copied!';
@@ -94,6 +91,7 @@ function displayMessage(role, text) {
         lastIndex = codeBlockRegex.lastIndex;
     }
 
+    // Add any remaining text after the last code block
     const postCodeText = text.substring(lastIndex);
     if (postCodeText) {
         tempProcessedContent.appendChild(document.createTextNode(postCodeText));
