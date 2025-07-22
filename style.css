@@ -80,7 +80,6 @@ body {
     border: 2px solid #0a1128;
 }
 
-
 .chat-input {
     display: flex;
     padding: 15px;
@@ -173,91 +172,21 @@ button#submitBtn:hover {
     display: inline-block; /* Aby tło dopasowało się do treści */
     word-wrap: break-word; /* Łamanie długich słów */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.message.generating {
-    text-align: center;
-    font-style: italic;
-    color: #ffffff; /* Biały kolor dla "Generating response..." */
-    font-size: 0.9em;
-}
-
-pre {
-    background-color: #282c34; /* Dark background for code blocks */
-    padding: 10px;
-    border-radius: 5px;
-    overflow-x: auto; /* Allows horizontal scrolling for long code lines */
-    margin-top: 5px;
-    margin-bottom: 5px;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-}
-
-code {
-    font-family: 'Fira Code', 'Cascadia Code', monospace; /* Monospace font for code */
-    font-size: 0.9em;
-    color: #abb2bf; /* Light gray for code text */
-}
-
-/* ... (pozostały kod CSS bez zmian) ... */
-
-/* Styles for chat messages - user and AI */
-.message {
-    margin-bottom: 12px;
-    line-height: 1.4;
-}
-
-.message strong {
-    display: block;
-    margin-bottom: 4px;
-    font-size: 0.9em;
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.message.user {
-    text-align: right;
-    margin-left: auto;
-    max-width: 90%;
-    color: #e0e0e0;
-}
-
-.message.user span {
-    background-color: #1e90ff;
-    padding: 8px 12px;
-    border-radius: 18px 18px 5px 18px;
-    display: inline-block;
-    word-wrap: break-word;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.message.model {
-    text-align: left;
-    margin-right: auto;
-    max-width: 90%;
-    color: #e0e0e0;
-}
-
-.message.model span {
-    background-color: rgba(255, 255, 255, 0.15);
-    padding: 8px 12px;
-    border-radius: 18px 18px 18px 5px;
-    display: inline-block;
-    word-wrap: break-word;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    /* DODANE: Upewnij się, że bąbelek wypełnia dostępną szerokość, jeśli zawiera blok kodu */
-    width: auto; /* Allow content to dictate width, but stretch if child element is wide */
-    min-width: 0; /* Override default min-width */
+    /* Upewnij się, że bąbelek wypełnia dostępną szerokość, jeśli zawiera blok kodu */
+    width: auto; /* Pozwól zawartości dyktować szerokość, ale rozciągnij, jeśli element podrzędny jest szeroki */
+    min-width: 0; /* Zastąp domyślny min-width */
 }
 
 /* Stylizacja bloku kodu */
 pre {
-    background-color: #282c34;
+    background-color: #282c34; /* Ciemne tło dla bloków kodu */
     padding: 10px;
     border-radius: 5px;
-    overflow-x: auto;
+    overflow-x: auto; /* Pozwala na przewijanie poziome dla długich linii kodu */
     margin-top: 5px;
     margin-bottom: 5px;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-    /* DODANE: Zapewnienie, że pre zajmuje całą dostępną szerokość */
+    /* Zapewnienie, że pre zajmuje całą dostępną szerokość */
     width: 100%; /* Wypełnij całą szerokość rodzica (spana) */
     box-sizing: border-box; /* Uwzględnij padding i border w szerokości */
     position: relative; /* Dla pozycjonowania przycisku kopiowania */
@@ -265,9 +194,9 @@ pre {
 }
 
 code {
-    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-family: 'Fira Code', 'Cascadia Code', monospace; /* Czcionka monospace dla kodu */
     font-size: 0.9em;
-    color: #abb2bf;
+    color: #abb2bf; /* Jasnoszary kolor tekstu kodu */
 }
 
 /* Styl dla przycisku kopiowania */
@@ -284,6 +213,7 @@ code {
     cursor: pointer;
     opacity: 0; /* Ukryty domyślnie */
     transition: opacity 0.3s ease;
+    z-index: 10; /* Upewnij się, że jest nad kodem */
 }
 
 pre:hover .copy-button {
