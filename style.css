@@ -81,22 +81,21 @@ body {
     padding: 10px 15px;
     background-color: rgba(0, 0, 0, 0.2);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    gap: 10px;
+    /* Usunięto gap, ponieważ nie ma już drugiego elementu obok input-box */
+    /* gap: 10px; */
     border-radius: 0;
 }
 
 .input-box {
-    flex-grow: 1;
+    flex-grow: 1; /* Pozwoli input-box zająć całą dostępną szerokość */
     display: flex;
     align-items: center;
     background-color: rgba(255, 255, 255, 0.15);
     border-radius: 20px;
-    padding: 5px 15px; /* Adjust padding if needed after removing icon */
+    padding: 5px 15px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
-
-/* Usunięto .microphone-icon style */
 
 textarea#promptInput {
     flex-grow: 1;
@@ -112,13 +111,15 @@ textarea#promptInput {
 }
 
 textarea#promptInput::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 0.6);
 }
 
 textarea#promptInput:focus {
     outline: none;
 }
 
+/* Usunięto style dla button#submitBtn */
+/*
 button#submitBtn {
     background-color: #1e90ff;
     color: white;
@@ -136,6 +137,7 @@ button#submitBtn:hover {
     background-color: #0056b3;
     transform: translateY(-1px);
 }
+*/
 
 /* Styles for chat messages - user and AI */
 .message {
