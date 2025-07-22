@@ -2,16 +2,15 @@
 // THIS IS FOR EDUCATIONAL AND TESTING PURPOSES ONLY.
 
 const GEMINI_API_KEY = "AIzaSyCqS3btZWOK26eeDMKD-eVUg9Sy5p4Ph8s"; // *** REPLACE THIS WITH YOUR API KEY ***
-// Using gemini-1.5-pro-latest or gemini-1.5-flash-latest for conversational capabilities
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+// Using gemini-1.5-flash-latest for conversational capabilities
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-03-25:generateContent?key=${GEMINI_API_KEY}`;
 
 // Get DOM elements
 const promptInput = document.getElementById('promptInput');
 const submitBtn = document.getElementById('submitBtn');
-const responseOutput = document.getElementById('responseOutput');
+const chatHistory = document.getElementById('responseOutput'); // Zmieniono nazwę zmiennej na chatHistory
 
 // --- CONVERSATION HISTORY ---
-// This array will store the conversation in the format required by Gemini API
 let conversationHistory = [];
 
 // Function to add a message to history
@@ -22,11 +21,17 @@ function addMessageToHistory(role, text) {
     });
 }
 
-// Function to display messages in the UI
+// Function to display messages in the UI (ZMIENIONA)
 function displayMessage(role, text) {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message', role); // Add classes for styling (e.g., 'user', 'model')
+    const messageContainer = document.createElement('div');
+    messageContainer.classList.add('message', role); // Add classes for styling (e.g., 'user', 'model')
 
+    const roleName = document.createElement('strong');
+    roleName.textContent = role === 'user' ? 'You:' : 'WaveGPT:';
+    messageContainer.appendChild(roleName);
+
+    const messageContent = document.createElement('span'); // Bąbelek wiadomości
+    
     // Check for code blocks using regex
     const codeBlockRegex = /```(lua|luacode)\n([\s\S]*?)\n```/g;
     let match;
@@ -52,7 +57,12 @@ function displayMessage(role, text) {
         pre.appendChild(codeElement);
 
         // Highlight the code
-        hljs.highlightElement(codeElement);
+        // Ensure hljs is loaded before calling highlightElement
+        if (typeof hljs !== 'undefined' && hljs.highlightElement) {
+            hljs.highlightElement(codeElement);
+        } else {
+            console.warn("Highlight.js (hljs) not found or not fully loaded. Code highlighting skipped.");
+        }
 
         processedHtml += tempDiv.innerHTML;
         lastIndex = codeBlockRegex.lastIndex;
@@ -61,11 +71,13 @@ function displayMessage(role, text) {
     // Add any remaining text after the last code block
     processedHtml += text.substring(lastIndex).replace(/\n/g, '<br>');
 
-    messageDiv.innerHTML = `<strong>${role === 'user' ? 'You' : 'WaveGPT'}:</strong> ${processedHtml}`;
-    responseOutput.appendChild(messageDiv);
+    messageContent.innerHTML = processedHtml;
+    messageContainer.appendChild(messageContent);
+    
+    chatHistory.appendChild(messageContainer); // Użyj chatHistory zamiast responseOutput
 
     // Scroll to bottom
-    responseOutput.scrollTop = responseOutput.scrollHeight;
+    chatHistory.scrollTop = chatHistory.scrollHeight;
 }
 
 
@@ -74,7 +86,8 @@ submitBtn.addEventListener('click', async () => {
     const userPrompt = promptInput.value.trim();
 
     if (!userPrompt) {
-        responseOutput.textContent = 'Please enter a question.';
+        // Usuwamy ten tekst, bo teraz wiadomości są dodawane do historii
+        // chatHistory.textContent = 'Please enter a question.'; 
         return;
     }
 
@@ -90,12 +103,11 @@ submitBtn.addEventListener('click', async () => {
     generatingMessageDiv.textContent = 'WaveGPT is generating a response... Please wait...';
     generatingMessageDiv.style.color = '#ffffff';
     generatingMessageDiv.classList.add('message', 'generating');
-    responseOutput.appendChild(generatingMessageDiv);
-    responseOutput.scrollTop = responseOutput.scrollHeight;
+    chatHistory.appendChild(generatingMessageDiv); // Użyj chatHistory
+    chatHistory.scrollTop = chatHistory.scrollHeight;
 
 
     // Define the system instructions for the AI
-    // Adjusted prompt for code blocks and conversational memory
     const systemInstruction = `You are WaveGPT, an AI assistant for the Roblox executor Wave, created by the SPDM Team and revived by mi7.
 Your sole purpose is to assist with creating Luau scripts.
 
@@ -111,14 +123,13 @@ Guidelines:
 - Use \`game:GetService(""ServiceName"")\` instead of dot notation for services (e.g., ""Players"", ""ReplicatedStorage"").
 - Do NOT use any "AI: yourmessagehere" type of stuff, as it will break the smoothness of the conversation.
 - If the user says Hi, hello, or something to start the conversation with, respond with:
-  ""Hello! What Luau script do you need assistance with today, user?""`;
-
+  ""Hello! What Luau script do you want me to generate, user?""`;
 
 
     try {
         const requestBody = {
-            contents: conversationHistory, // Send the full conversation history
-            system_instruction: { parts: [{ text: systemInstruction }] } // Add system instruction
+            contents: conversationHistory,
+            system_instruction: { parts: [{ text: systemInstruction }] }
         };
 
         const response = await fetch(GEMINI_API_URL, {
@@ -130,13 +141,15 @@ Guidelines:
         });
 
         // Remove generating message
-        responseOutput.removeChild(generatingMessageDiv);
+        if (chatHistory.contains(generatingMessageDiv)) {
+             chatHistory.removeChild(generatingMessageDiv);
+        }
 
         if (!response.ok) {
             const errorData = await response.json();
             console.error("Gemini API Error:", errorData);
             displayMessage('model', `Error: ${errorData.error ? errorData.error.message : response.statusText || 'Unknown error.'}`);
-            responseOutput.lastChild.style.color = 'red'; // Set error message color
+            // displayMessage sets colors, no direct style needed here
             return;
         }
 
@@ -144,57 +157,21 @@ Guidelines:
 
         if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
             const generatedText = data.candidates[0].content.parts[0].text;
-            displayMessage('model', generatedText); // Display the model's response
-            addMessageToHistory('model', generatedText); // Add model's response to history
+            displayMessage('model', generatedText);
+            addMessageToHistory('model', generatedText);
         } else {
             displayMessage('model', 'Received an unexpected response from Gemini API. Please try again.');
-            responseOutput.lastChild.style.color = 'orange'; // Set warning message color
+            // displayMessage sets colors
             console.warn("Unexpected response structure:", data);
         }
 
     } catch (error) {
         // Remove generating message if still present due to network error
-        if (responseOutput.contains(generatingMessageDiv)) {
-             responseOutput.removeChild(generatingMessageDiv);
+        if (chatHistory.contains(generatingMessageDiv)) {
+             chatHistory.removeChild(generatingMessageDiv);
         }
         console.error('An error occurred during API communication:', error);
         displayMessage('model', `An error occurred: ${error.message}. Check your browser console.`);
-        responseOutput.lastChild.style.color = 'red'; // Set error message color
+        // displayMessage sets colors
     }
 });
-
-// Basic styling for messages (add to style.css if you want)
-/*
-.message {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.message.user {
-    background-color: rgba(0, 123, 255, 0.1);
-    text-align: right;
-    margin-left: auto;
-    max-width: 80%;
-}
-
-.message.model {
-    background-color: rgba(255, 255, 255, 0.1);
-    text-align: left;
-    margin-right: auto;
-    max-width: 80%;
-}
-
-pre {
-    background-color: #282c34; // Dark background for code
-    padding: 10px;
-    border-radius: 5px;
-    overflow-x: auto; // Scroll for long lines
-}
-
-code {
-    font-family: 'Fira Code', 'Cascadia Code', monospace; // Monospace font for code
-    font-size: 0.9em;
-    color: #abb2bf; // Light gray for code text
-}
-*/
