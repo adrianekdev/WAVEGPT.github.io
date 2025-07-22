@@ -8,7 +8,7 @@ const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/
 // Get DOM elements
 const promptInput = document.getElementById('promptInput');
 const submitBtn = document.getElementById('submitBtn');
-const chatHistory = document.getElementById('responseOutput'); // Zmieniono nazwę zmiennej na chatHistory
+const chatHistory = document.getElementById('responseOutput');
 
 // --- CONVERSATION HISTORY ---
 let conversationHistory = [];
@@ -21,10 +21,10 @@ function addMessageToHistory(role, text) {
     });
 }
 
-// Function to display messages in the UI (ZMIENIONA)
+// Function to display messages in the UI
 function displayMessage(role, text) {
     const messageContainer = document.createElement('div');
-    messageContainer.classList.add('message', role); // Add classes for styling (e.g., 'user', 'model')
+    messageContainer.classList.add('message', role);
 
     const roleName = document.createElement('strong');
     roleName.textContent = role === 'user' ? 'You:' : 'WaveGPT:';
@@ -36,45 +36,71 @@ function displayMessage(role, text) {
     const codeBlockRegex = /```(lua|luacode)\n([\s\S]*?)\n```/g;
     let match;
     let lastIndex = 0;
-    let processedHtml = '';
+    let tempProcessedContent = document.createDocumentFragment(); // Użyj fragmentu dokumentu dla efektywności
 
     while ((match = codeBlockRegex.exec(text)) !== null) {
         // Add text before the code block
-        processedHtml += text.substring(lastIndex, match.index).replace(/\n/g, '<br>');
+        const preCodeText = text.substring(lastIndex, match.index);
+        if (preCodeText) {
+            tempProcessedContent.appendChild(document.createTextNode(preCodeText));
+            // Dodajemy <br> tylko jeśli nie jest to bezpośrednio przed blokiem kodu
+            if (!preCodeText.endsWith('\n')) {
+                tempProcessedContent.appendChild(document.createElement('br'));
+            }
+        }
 
-        const lang = match[1]; // 'lua' or 'luacode'
+        const lang = match[1];
         const code = match[2];
 
         // Create pre and code elements for highlighting
         const pre = document.createElement('pre');
         const codeElement = document.createElement('code');
-        codeElement.classList.add(`language-${lang}`); // Highlight.js language class
+        codeElement.classList.add(`language-${lang}`);
         codeElement.textContent = code;
 
-        // Append to a temporary div to get innerHTML after highlighting
-        const tempDiv = document.createElement('div');
-        tempDiv.appendChild(pre);
         pre.appendChild(codeElement);
 
         // Highlight the code
-        // Ensure hljs is loaded before calling highlightElement
         if (typeof hljs !== 'undefined' && hljs.highlightElement) {
             hljs.highlightElement(codeElement);
         } else {
             console.warn("Highlight.js (hljs) not found or not fully loaded. Code highlighting skipped.");
         }
 
-        processedHtml += tempDiv.innerHTML;
+        // --- DODANIE PRZYCISKU KOPIOWANIA ---
+        const copyButton = document.createElement('button');
+        copyButton.classList.add('copy-button');
+        copyButton.textContent = 'Copy';
+        copyButton.onclick = () => {
+            navigator.clipboard.writeText(code)
+                .then(() => {
+                    const originalText = copyButton.textContent;
+                    copyButton.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyButton.textContent = originalText;
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+        };
+        pre.appendChild(copyButton);
+        // --- KONIEC DODAWANIA PRZYCISKU KOPIOWANIA ---
+
+        tempProcessedContent.appendChild(pre);
         lastIndex = codeBlockRegex.lastIndex;
     }
 
     // Add any remaining text after the last code block
-    processedHtml += text.substring(lastIndex).replace(/\n/g, '<br>');
+    const postCodeText = text.substring(lastIndex);
+    if (postCodeText) {
+        tempProcessedContent.appendChild(document.createTextNode(postCodeText));
+    }
 
-    messageContent.innerHTML = processedHtml;
-    messageContainer.appendChild(messageContent);
+    messageContent.appendChild(tempProcessedContent); // Dodaj fragment dokumentu do span
     
-    chatHistory.appendChild(messageContainer); // Użyj chatHistory zamiast responseOutput
+    messageContainer.appendChild(messageContent);
+    chatHistory.appendChild(messageContainer);
 
     // Scroll to bottom
     chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -86,8 +112,6 @@ submitBtn.addEventListener('click', async () => {
     const userPrompt = promptInput.value.trim();
 
     if (!userPrompt) {
-        // Usuwamy ten tekst, bo teraz wiadomości są dodawane do historii
-        // chatHistory.textContent = 'Please enter a question.'; 
         return;
     }
 
@@ -103,7 +127,7 @@ submitBtn.addEventListener('click', async () => {
     generatingMessageDiv.textContent = 'WaveGPT is generating a response... Please wait...';
     generatingMessageDiv.style.color = '#ffffff';
     generatingMessageDiv.classList.add('message', 'generating');
-    chatHistory.appendChild(generatingMessageDiv); // Użyj chatHistory
+    chatHistory.appendChild(generatingMessageDiv);
     chatHistory.scrollTop = chatHistory.scrollHeight;
 
 
@@ -123,7 +147,9 @@ Guidelines:
 - Use \`game:GetService(""ServiceName"")\` instead of dot notation for services (e.g., ""Players"", ""ReplicatedStorage"").
 - Do NOT use any "AI: yourmessagehere" type of stuff, as it will break the smoothness of the conversation.
 - If the user says Hi, hello, or something to start the conversation with, respond with:
-  ""Hello! What Luau script do you want me to generate, user?""`;
+  ""Hello! What Luau script do you need assistance with today, user?""
+
+If this is the very first message in the conversation or the conversation has been reset, greet the user briefly and address them by "User".`;
 
 
     try {
@@ -149,7 +175,6 @@ Guidelines:
             const errorData = await response.json();
             console.error("Gemini API Error:", errorData);
             displayMessage('model', `Error: ${errorData.error ? errorData.error.message : response.statusText || 'Unknown error.'}`);
-            // displayMessage sets colors, no direct style needed here
             return;
         }
 
@@ -161,7 +186,6 @@ Guidelines:
             addMessageToHistory('model', generatedText);
         } else {
             displayMessage('model', 'Received an unexpected response from Gemini API. Please try again.');
-            // displayMessage sets colors
             console.warn("Unexpected response structure:", data);
         }
 
@@ -172,6 +196,5 @@ Guidelines:
         }
         console.error('An error occurred during API communication:', error);
         displayMessage('model', `An error occurred: ${error.message}. Check your browser console.`);
-        // displayMessage sets colors
     }
 });
