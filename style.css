@@ -1,37 +1,36 @@
 body {
-    font-family: Arial, sans-serif;
+    /* Ustawienie czcionki Inter dla całego body */
+    font-family: 'Inter', Arial, sans-serif;
     display: flex;
     justify-content: center;
-    align-items: center; /* Wyśrodkowanie okna czatu pionowo */
+    align-items: center;
     min-height: 100vh;
-    /* Gradient tła jak na zdjęciu - ciemny niebieski do turkusowego */
     background: linear-gradient(135deg, #0a1128 0%, #001f54 50%, #1a4f6d 100%);
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
     margin: 0;
-    overflow: hidden; /* Zapobiega przewijaniu tła, jeśli okno czatu jest duże */
+    overflow: hidden;
     color: #f4f4f4;
 }
 
 .chat-container {
     display: flex;
     flex-direction: column;
-    /* Zmienione, aby dopasować się do dostępnego miejsca i usunąć zaokrąglenia na bokach */
-    width: 250px; /* Zmniejszona szerokość, aby mieściła się w lewej kolumnie */
-    height: 100vh; /* Wypełnij całą wysokość widoku, jeśli jest osadzone w aplikacji */
-    /* Jeśli chcesz stałą wysokość mniejszą niż 100vh, np. 550px, użyj height: 550px; */
+    /* Zmniejszona szerokość i dostosowana wysokość dla bocznego panelu */
+    width: 250px;
+    height: 100vh; /* Zmieniono z 550px na 100vh, jeśli ma wypełniać całą wysokość */
 
-    background-color: rgba(255, 255, 255, 0.05); /* Lekko przezroczyste tło kontenera */
+    background-color: rgba(255, 255, 255, 0.05);
     border-radius: 0; /* Usunięte zaokrąglenia */
-    box-shadow: none; /* Usunięto cień, jeśli ma wyglądać na zintegrowane */
+    box-shadow: none; /* Usunięto cień */
     overflow: hidden;
     border: none; /* Usunięto ramkę */
     backdrop-filter: blur(15px);
 }
 
 .chat-header {
-    background-color: rgba(0, 0, 0, 0.2); /* Ciemniejszy, przezroczysty nagłówek */
+    background-color: rgba(0, 0, 0, 0.2);
     padding: 15px 20px;
     display: flex;
     align-items: center;
@@ -40,14 +39,12 @@ body {
     color: #fff;
     font-size: 1.2em;
     font-weight: bold;
-    border-radius: 0; /* Usunięte zaokrąglenia */
+    border-radius: 0;
 }
 
 .chat-icon {
     width: 28px;
     height: 28px;
-    /* Optional: Add filter if icon is not white and you want to color it */
-    /* filter: brightness(0) invert(1); */
 }
 
 .header-text {
@@ -62,11 +59,10 @@ body {
     flex-grow: 1;
     padding: 15px;
     overflow-y: auto;
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: #1e90ff #0a1128; /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #1e90ff #0a1128;
 }
 
-/* Chrome, Edge, Safari */
 .chat-history::-webkit-scrollbar {
     width: 8px;
 }
@@ -88,7 +84,7 @@ body {
     background-color: rgba(0, 0, 0, 0.2);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     gap: 10px;
-    border-radius: 0; /* Usunięte zaokrąglenia */
+    border-radius: 0;
 }
 
 textarea#promptInput {
@@ -148,7 +144,7 @@ button#submitBtn:hover {
 .message.user {
     text-align: right;
     margin-left: auto;
-    max-width: 90%;
+    max-width: 100%; /* Zwiększono max-width, aby bąbelki wypełniały więcej przestrzeni */
     color: #e0e0e0;
 }
 
@@ -156,7 +152,8 @@ button#submitBtn:hover {
     background-color: #1e90ff;
     padding: 8px 12px;
     border-radius: 18px 18px 5px 18px;
-    display: inline-block;
+    /* display: inline-block; */ /* Zmieniono na block lub flex, aby poprawnie zawierać pre */
+    display: block; /* Zmieniono na block, aby span zajmował całą dostępną szerokość */
     word-wrap: break-word;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
@@ -164,7 +161,7 @@ button#submitBtn:hover {
 .message.model {
     text-align: left;
     margin-right: auto;
-    max-width: 90%;
+    max-width: 100%; /* Zwiększono max-width, aby bąbelki wypełniały więcej przestrzeni */
     color: #e0e0e0;
 }
 
@@ -172,7 +169,8 @@ button#submitBtn:hover {
     background-color: rgba(255, 255, 255, 0.15);
     padding: 8px 12px;
     border-radius: 18px 18px 18px 5px;
-    display: inline-block;
+    /* display: inline-block; */ /* Zmieniono na block lub flex, aby poprawnie zawierać pre */
+    display: block; /* Zmieniono na block, aby span zajmował całą dostępną szerokość */
     word-wrap: break-word;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     width: auto;
@@ -184,7 +182,7 @@ pre {
     background-color: #282c34;
     padding: 10px;
     border-radius: 5px;
-    overflow-x: auto;
+    overflow-x: auto; /* Przewijanie poziome */
     margin-top: 5px;
     margin-bottom: 5px;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
@@ -192,12 +190,17 @@ pre {
     box-sizing: border-box;
     position: relative;
     min-width: 0;
+    /* DODANE: Usunięcie marginesów wewnątrz pre, jeśli się pojawiały */
+    white-space: pre-wrap; /* Pozwala na łamanie wierszy w obrębie bloku kodu */
+    word-break: break-all; /* Dodatkowo łamie długie słowa */
 }
 
 code {
-    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-family: 'Fira Code', 'Cascadia Code', 'Inter Mono', monospace; /* Dodano Inter Mono lub inną monospace dla kodu, jeśli używasz Inter */
     font-size: 0.9em;
     color: #abb2bf;
+    /* Upewnienie się, że kod nie ma własnych marginesów */
+    display: block; /* Zapewnia, że kod wypełnia pre */
 }
 
 /* Styl dla przycisku kopiowania */
@@ -212,14 +215,17 @@ code {
     padding: 5px 8px;
     font-size: 12px;
     cursor: pointer;
-    opacity: 0;
+    opacity: 1; /* Zmieniono na 1, aby był zawsze widoczny, lub 0 z hover */
+    /* Jeśli chcesz, aby był zawsze widoczny, zostaw opacity: 1; */
+    /* Jeśli chcesz, aby pojawiał się tylko na hover, ustaw opacity: 0; i użyj pre:hover .copy-button { opacity: 1; } */
     transition: opacity 0.3s ease;
     z-index: 10;
 }
 
-pre:hover .copy-button {
+/* Usuwamy to, jeśli chcesz, aby przycisk był zawsze widoczny */
+/* pre:hover .copy-button {
     opacity: 1;
-}
+} */
 
 .copy-button:active {
     background-color: rgba(0, 0, 0, 0.8);
