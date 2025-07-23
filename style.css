@@ -4,13 +4,13 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #1A4D6F 0%, #153B55 50%, #0D243B 100%);
+    background: #1E1E1E;
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
     margin: 0;
     overflow: hidden;
-    color: #f4f4f4;
+    color: #D4D4D4;
 }
 
 .chat-container {
