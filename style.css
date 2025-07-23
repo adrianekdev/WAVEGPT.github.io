@@ -4,13 +4,14 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: #1E1E1E;
+    /* PRZYWRACAMY ORYGINALNY GRADIENT DLA TŁA CAŁEJ STRONY */
+    background: linear-gradient(135deg, #1A4D6F 0%, #153B55 50%, #0D243B 100%);
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
     margin: 0;
     overflow: hidden;
-    color: #D4D4D4;
+    color: #f4f4f4; /* PRZYWRACAMY ORYGINALNY KOLOR TEKSTU DLA BODY */
 }
 
 .chat-container {
@@ -18,12 +19,13 @@ body {
     flex-direction: column;
     width: 250px;
     height: 100vh;
-    background: linear-gradient(180deg, rgba(30, 144, 255, 0.2) 0%, rgba(30, 144, 255, 0.1) 100%);
+    /* ZMIENIONO TŁO KONTENERA CZATU NA #1E1E1E */
+    background: #1E1E1E;
     border-radius: 0;
     box-shadow: none;
     overflow: hidden;
     border: none;
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px); /* Możesz usunąć backdrop-filter, jeśli tło jest solidne */
 }
 
 .chat-header {
@@ -49,7 +51,8 @@ body {
 }
 
 .ai-text {
-    color: #1e90ff;
+    /* Używamy koloru #1E1E1E dla tekstu "AI" */
+    color: #1E1E1E;
 }
 
 .chat-history {
@@ -109,7 +112,7 @@ textarea#promptInput {
 }
 
 textarea#promptInput::placeholder {
-    color: rgba(255, 255, 255, 0.6); /* <-- Zmieniono z 255, 255, 0 na 255, 255, 255 */
+    color: rgba(255, 255, 255, 0.6);
 }
 
 textarea#promptInput:focus {
