@@ -1,3 +1,5 @@
+/* style.css */
+
 body {
     font-family: 'Inter', Arial, sans-serif;
     display: flex;
@@ -19,8 +21,8 @@ body {
     flex-direction: column;
     width: 250px;
     height: 100vh;
-    /* ZMIENIONO TŁO KONTENERA CZATU NA #1E1E1E */
-    background: #1E1E1E;
+    /* ZMIENIONO TŁO KONTENERA CZATU NA #0F0E11 */
+    background: #0F0E11;
     border-radius: 0;
     box-shadow: none;
     overflow: hidden;
@@ -51,8 +53,8 @@ body {
 }
 
 .ai-text {
-    /* Używamy koloru #1E1E1E dla tekstu "AI" */
-    color: #1E1E1E;
+    /* Używamy koloru #0F0E11 dla tekstu "AI" */
+    color: #0F0E11;
 }
 
 .chat-history {
