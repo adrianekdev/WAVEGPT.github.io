@@ -62,7 +62,7 @@ body {
     padding: 15px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #BBBBBB #0a1128;
+    scrollbar-color: #BBBBBB #0a1128; /* Zmieniono kolor scrollbara (kciuk #BBBBBB, ścieżka #0a1128) */
 }
 
 .chat-history::-webkit-scrollbar {
@@ -70,14 +70,14 @@ body {
 }
 
 .chat-history::-webkit-scrollbar-track {
-    background: #0a1128;
+    background: #0a1128; /* Ścieżka scrollbara */
     border-radius: 10px;
 }
 
 .chat-history::-webkit-scrollbar-thumb {
-    background-color: #1e90ff;
+    background-color: #BBBBBB; /* Kciuk scrollbara */
     border-radius: 10px;
-    border: 2px solid #0a1128;
+    border: 2px solid #0a1128; /* Ramka kciuka scrollbara */
 }
 
 .chat-input-wrapper {
