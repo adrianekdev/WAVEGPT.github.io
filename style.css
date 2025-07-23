@@ -54,7 +54,7 @@ body {
 
 .ai-text {
     /* Używamy koloru #0F0E11 dla tekstu "AI" */
-    color: #0F0E11;
+    color: #BBBBBB;
 }
 
 .chat-history {
@@ -62,7 +62,7 @@ body {
     padding: 15px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #1e90ff #0a1128;
+    scrollbar-color: #BBBBBB #0a1128;
 }
 
 .chat-history::-webkit-scrollbar {
@@ -162,7 +162,7 @@ textarea#promptInput:focus {
     padding: 8px 12px;
     border-radius: 18px 18px 18px 5px;
     display: block;
-    word-wrap: break-word;
+    word-wrap: break-word;F
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     width: auto;
     min-width: 0;
